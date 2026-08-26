@@ -6,7 +6,7 @@
     <img src="https://static.streamlit.io/badges/streamlit_badge_black_white.svg" alt="Open in Streamlit"/>
   </a>
   <br/><br/>
-  <b>🔴 LIVE APP → <a href="https://unihack-dxnoekbrbwvnrdowtthqeb.streamlit.app/">Synematic AI | Data Hub · Streamlit</a></b>
+  <h2><img src="live_dot.svg" width="28" height="28"/> &nbsp; LIVE APP &nbsp;→&nbsp; <a href="https://unihack-dxnoekbrbwvnrdowtthqeb.streamlit.app/">Synematic AI | Data Hub · Streamlit</a></h2>
 </div>
 
 ---
