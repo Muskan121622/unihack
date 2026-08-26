@@ -34,7 +34,11 @@ These live spreadsheets are the direct output of the autonomous 8-stage pipeline
 > *Walks through the key pipeline files in VS Code — the 8-stage backend, LLM extractor, Qdrant indexer, and how the evidence builder processes raw web data into structured 252-column output.*
 
 <!-- DRAG & DROP PART 2 VIDEO CLIP HERE -->
-📌 **[▶ Watch Part 2 on GitHub]** ← *Upload clip here via GitHub web editor*
+
+
+https://github.com/user-attachments/assets/13f206e1-512c-4cd9-b5a3-f1e8e4e14b61
+
+
 
 ---
 
@@ -43,7 +47,11 @@ These live spreadsheets are the direct output of the autonomous 8-stage pipeline
 > *Explains the production-grade architectural decision to use AWS S3 (or Google Cloud Storage) for storing the pre-processed Excel file, instead of converting the CSV to Excel on every request inside the Streamlit Cloud server.*
 
 <!-- DRAG & DROP PART 3 VIDEO CLIP HERE -->
-📌 **[▶ Watch Part 3 on GitHub]** ← *Upload clip here via GitHub web editor*
+
+
+https://github.com/user-attachments/assets/3dc6bf71-374a-4708-92b5-27df3c86ec98
+
+
 
 ---
 
