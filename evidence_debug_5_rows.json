@@ -1,0 +1,82 @@
+[
+  {
+    "mpn": "DCB518ASTS06G",
+    "discovery": {
+      "mfr_url": ""
+    },
+    "field_coverage": {
+      "fields_filled": 73,
+      "fields_empty": 0
+    },
+    "embedding": {
+      "chunks_embedded": 0
+    },
+    "qdrant_retrieval": {
+      "unique_chunks": 0
+    }
+  },
+  {
+    "mpn": "3MABR-7100075678",
+    "discovery": {
+      "mfr_url": ""
+    },
+    "field_coverage": {
+      "fields_filled": 34,
+      "fields_empty": 0
+    },
+    "embedding": {
+      "chunks_embedded": 0
+    },
+    "qdrant_retrieval": {
+      "unique_chunks": 0
+    }
+  },
+  {
+    "mpn": "3MABR-7100045865",
+    "discovery": {
+      "mfr_url": ""
+    },
+    "field_coverage": {
+      "fields_filled": 44,
+      "fields_empty": 0
+    },
+    "embedding": {
+      "chunks_embedded": 0
+    },
+    "qdrant_retrieval": {
+      "unique_chunks": 0
+    }
+  },
+  {
+    "mpn": "3MABR-7100048736",
+    "discovery": {
+      "mfr_url": ""
+    },
+    "field_coverage": {
+      "fields_filled": 29,
+      "fields_empty": 0
+    },
+    "embedding": {
+      "chunks_embedded": 0
+    },
+    "qdrant_retrieval": {
+      "unique_chunks": 0
+    }
+  },
+  {
+    "mpn": "3MABR-7100075690",
+    "discovery": {
+      "mfr_url": ""
+    },
+    "field_coverage": {
+      "fields_filled": 32,
+      "fields_empty": 0
+    },
+    "embedding": {
+      "chunks_embedded": 0
+    },
+    "qdrant_retrieval": {
+      "unique_chunks": 0
+    }
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "total_unique": 999,
+  "completed_count": 999,
+  "pending_count": 381,
+  "started_at": "2026-08-23T14:42:16.137099",
+  "status": "running",
+  "last_mpn": "T27417",
+  "updated_at": "2026-08-23T16:58:46.984293",
+  "elapsed_seconds": 8190,
+  "estimated_remaining_seconds": 0
+}

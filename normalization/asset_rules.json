@@ -1,0 +1,15 @@
+{
+  "sds": [
+    "sds",
+    "safety data sheet",
+    "msds"
+  ],
+  "installation_manual": [
+    "install",
+    "installation"
+  ],
+  "specification_sheet": [
+    "spec",
+    "specification"
+  ]
+}

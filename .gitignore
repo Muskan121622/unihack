@@ -1,0 +1,18 @@
+
+qdrant_db_v2_pipeline/
+
+# Generated databases
+qdrant_db/
+qdrant_db_fast/
+qdrant_db_local/
+qdrant_db_v2/
+qdrant_db_v3/
+qdrant_db_v2_pipeline/
+manufacturer_rag_db/
+
+# Generated artifacts
+artifacts/
+
+# Python cache
+__pycache__/
+*.pyc

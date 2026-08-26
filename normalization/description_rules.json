@@ -1,0 +1,29 @@
+{
+  "INVOICE_DESC": {
+    "max_length": 40,
+    "casing": "UPPERCASE",
+    "components": [
+      "brand",
+      "product_type",
+      "key_specs"
+    ]
+  },
+  "SHORT_DESC": {
+    "components": [
+      "brand",
+      "series",
+      "mpn",
+      "product_type",
+      "features"
+    ]
+  },
+  "MOBILE_DESC": {
+    "max_length": 80,
+    "components": [
+      "brand",
+      "product_type",
+      "series",
+      "mpn"
+    ]
+  }
+}
