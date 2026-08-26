@@ -68,20 +68,24 @@ with col_title:
     st.markdown("<p style='color: #888; font-size: 1.1rem; margin-bottom: 2rem;'>Autonomous Extraction Pipeline & AI Knowledge Agent</p>", unsafe_allow_html=True)
 
 with col_btn:
-    # Check for excel file to download
-    excel_path = "final_delivery_1000_rows.xlsx"
-    if os.path.exists(excel_path):
+    # Generate Excel in-memory from CSV — works on Streamlit Cloud too!
+    csv_path_dl = "final_delivery_1000_rows.csv"
+    if os.path.exists(csv_path_dl):
         try:
-            with open(excel_path, "rb") as f:
-                file_data = f.read()
+            import io
+            df_dl = pd.read_csv(csv_path_dl)
+            buffer = io.BytesIO()
+            with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
+                df_dl.to_excel(writer, index=False, sheet_name="Products")
+            buffer.seek(0)
             st.download_button(
-                label="? Download output of given 1000 rows sample",
-                data=file_data,
+                label="⬇️ Download output of given 1000 rows sample",
+                data=buffer,
                 file_name="final_delivery_1000_rows.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
-        except PermissionError:
-            st.button("?? Close Excel to Unlock Download", disabled=True)
+        except Exception as e:
+            st.button(f"Download unavailable: {e}", disabled=True)
 
 csv_path = "final_delivery_1000_rows.csv"
 if os.path.exists(csv_path):
