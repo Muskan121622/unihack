@@ -94,6 +94,16 @@ streamlit run app.py
 
 ---
 
+## 📊 Sample Output — 1,000 Row Extraction Result
+
+> **View the full extracted dataset (252 columns × 1,000 rows) here:**
+>
+> 👉 **[Final Delivery — 1,000 Rows Google Sheet](https://docs.google.com/spreadsheets/d/1bmTKAHH7A-6qjSBkqPwmjuu_9xCTytzM/edit?usp=sharing&ouid=109796971849085079470&rtpof=true&sd=true)**
+
+This live spreadsheet is the direct output of the autonomous 8-stage pipeline — scraped, embedded, retrieved, and extracted entirely by AI with zero manual effort.
+
+---
+
 ## 📈 Impact & Results
 * **Scalability:** Successfully processed 1,000+ complex industrial SKUs.
 * **Efficiency:** Reduced manual extraction time from hours per product to ~15 seconds per product.
