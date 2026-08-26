@@ -1,6 +1,12 @@
 <div align="center">
   <h1>⚡ Synematic AI: Autonomous Data Extraction & RAG Hub</h1>
   <p><b>An End-to-End AI Pipeline for Automated Web Scraping, Neural Extraction, and Semantic Search</b></p>
+  <br/>
+  <a href="https://unihack-dxnoekbrbwvnrdowtthqeb.streamlit.app/">
+    <img src="https://static.streamlit.io/badges/streamlit_badge_black_white.svg" alt="Open in Streamlit"/>
+  </a>
+  <br/><br/>
+  <b>🔴 LIVE APP → <a href="https://unihack-dxnoekbrbwvnrdowtthqeb.streamlit.app/">Synematic AI | Data Hub · Streamlit</a></b>
 </div>
 
 ---
