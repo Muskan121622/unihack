@@ -5,6 +5,64 @@
 
 ---
 
+## 🎬 Live Demo Walkthrough
+
+> ✂️ *The full 5-minute demo is split into 3 focused clips. Drag-drop your video clips here on GitHub to embed them.*
+
+---
+
+### 🖥️ Part 1 — Live Streamlit App: Excel Output & RAG Agent in Action
+
+> *Shows the live deployed Streamlit URL, how to download the 1,000-row Excel output, and the Synematic AI Agent answering real product questions using RAG.*
+
+<!-- DRAG & DROP PART 1 VIDEO CLIP HERE -->
+📌 **[▶ Watch Part 1 on GitHub]** ← *Upload clip here via GitHub web editor*
+
+---
+
+### 🗂️ Part 2 — VS Code: Pipeline Architecture Deep Dive
+
+> *Walks through the key pipeline files in VS Code — the 8-stage backend, LLM extractor, Qdrant indexer, and how the evidence builder processes raw web data into structured 252-column output.*
+
+<!-- DRAG & DROP PART 2 VIDEO CLIP HERE -->
+📌 **[▶ Watch Part 2 on GitHub]** ← *Upload clip here via GitHub web editor*
+
+---
+
+### ☁️ Part 3 — System Design: Why AWS S3 for Production Storage
+
+> *Explains the production-grade architectural decision to use AWS S3 (or Google Cloud Storage) for storing the pre-processed Excel file, instead of converting the CSV to Excel on every request inside the Streamlit Cloud server.*
+
+<!-- DRAG & DROP PART 3 VIDEO CLIP HERE -->
+📌 **[▶ Watch Part 3 on GitHub]** ← *Upload clip here via GitHub web editor*
+
+---
+
+## ⚙️ Production Architecture Note
+
+> **As a System Designer**, one critical improvement for scaling this app to production is offloading file storage to **AWS S3**.
+
+**The Problem with the current approach:**
+Every time a user clicks "Download Excel", the Streamlit Cloud server:
+1. Reads the entire 1,000-row CSV from disk
+2. Converts it to `.xlsx` format **in memory** using pandas + openpyxl
+3. Streams it to the user
+
+This burns **CPU + RAM on every single request**. If 10 users click download simultaneously, the free-tier Streamlit Cloud server will crash.
+
+**The Production Fix — AWS S3 Pre-Processing:**
+```
+[Pipeline Completion] → [Convert CSV→Excel ONCE] → [Upload to S3 Bucket]
+                                                            ↓
+[User clicks Download] → [Streamlit redirects to S3 URL] → [User downloads directly from S3]
+```
+✅ Zero server processing per download  
+✅ Unlimited concurrent users  
+✅ Blazing fast — files served from AWS CDN edge nodes  
+✅ Cost: ~\$0.023/GB/month (virtually free for this dataset size)
+
+---
+
 ## 📖 Overview
 **Synematic AI** is an advanced, fully autonomous data engineering and Retrieval-Augmented Generation (RAG) pipeline. Designed to eliminate manual data entry, this system ingests raw product names/SKUs, autonomously scours the internet for technical spec sheets and manuals, embeds the data into a Vector Database, and utilizes Large Language Models (LLMs) to accurately extract over **250+ structured data points** per product. 
 
