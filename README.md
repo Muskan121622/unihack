@@ -11,6 +11,18 @@
 
 ---
 
+## 📊 Sample Output — 1,000 Row Extraction Result
+
+> **View the full extracted dataset (252 columns × 1,000 rows) here:**
+>
+> 👉 **[Final Delivery — 1,000 Rows Google Sheet](https://docs.google.com/spreadsheets/d/1bmTKAHH7A-6qjSBkqPwmjuu_9xCTytzM/edit?usp=sharing&ouid=109796971849085079470&rtpof=true&sd=true)**
+>
+> 👉 **[final_delivery_1000_rows — Google Sheets](https://docs.google.com/spreadsheets/d/1834aLkYhUysKVvx27a5zdp-FUm_qUZhBfDgQ64NG5-8/edit?gid=835546002#gid=835546002)**
+
+These live spreadsheets are the direct output of the autonomous 8-stage pipeline — scraped, embedded, retrieved, and extracted entirely by AI with zero manual effort.
+
+---
+
 ## 🎬 Live Demo Walkthrough
 
 🎥 **[Watch Full Demo Video — Google Drive](https://drive.google.com/file/d/1ZzVmDj5YbiZbcrhKQTUPCNrIbP6Lq8be/view?usp=sharing)**
@@ -149,17 +161,6 @@ streamlit run app.py
 
 ---
 
-## 📊 Sample Output — 1,000 Row Extraction Result
-
-> **View the full extracted dataset (252 columns × 1,000 rows) here:**
->
-> 👉 **[Final Delivery — 1,000 Rows Google Sheet](https://docs.google.com/spreadsheets/d/1bmTKAHH7A-6qjSBkqPwmjuu_9xCTytzM/edit?usp=sharing&ouid=109796971849085079470&rtpof=true&sd=true)**
->
-> 👉 **[final_delivery_1000_rows — Google Sheets](https://docs.google.com/spreadsheets/d/1834aLkYhUysKVvx27a5zdp-FUm_qUZhBfDgQ64NG5-8/edit?gid=835546002#gid=835546002)**
-
-These live spreadsheets are the direct output of the autonomous 8-stage pipeline — scraped, embedded, retrieved, and extracted entirely by AI with zero manual effort.
-
----
 
 ## 📈 Impact & Results
 * **Scalability:** Successfully processed 1,000+ complex industrial SKUs.
