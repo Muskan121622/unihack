@@ -13,7 +13,15 @@
 
 ## 🎬 Live Demo Walkthrough
 
-> ✂️ *The full 5-minute demo is split into 3 focused clips. Drag-drop your video clips here on GitHub to embed them.*
+> *Full 5-minute demo: Live Streamlit app, 1,000-row Excel output, RAG Agent Q&A, VS Code pipeline walkthrough, and production system design.*
+
+<div align="center">
+  <a href="https://drive.google.com/file/d/1ZzVmDj5YbiZbcrhKQTUPCNrIbP6Lq8be/view?usp=sharing">
+    <img src="https://drive.google.com/thumbnail?id=1ZzVmDj5YbiZbcrhKQTUPCNrIbP6Lq8be&sz=w1280" alt="▶ Watch Full Demo Video" width="800"/>
+  </a>
+  <br/>
+  <b>👆 Click to watch the full demo on Google Drive</b>
+</div>
 
 ---
 
@@ -21,8 +29,7 @@
 
 > *Shows the live deployed Streamlit URL, how to download the 1,000-row Excel output, and the Synematic AI Agent answering real product questions using RAG.*
 
-<!-- DRAG & DROP PART 1 VIDEO CLIP HERE -->
-📌 **[▶ Watch Part 1 on GitHub]** ← *Upload clip here via GitHub web editor*
+👉 **[▶ Watch Part 1 — Click Here](https://drive.google.com/file/d/1ZzVmDj5YbiZbcrhKQTUPCNrIbP6Lq8be/view?usp=sharing)**
 
 ---
 
