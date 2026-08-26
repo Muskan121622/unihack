@@ -9,7 +9,15 @@ st.set_page_config(page_title="Synematic AI | Data Hub", layout="wide", page_ico
 
 # Load API key
 BM_KEY = ""
-if os.path.exists(".env"):
+try:
+    if "BLUESMINDS_API_KEY" in st.secrets:
+        val = st.secrets["BLUESMINDS_API_KEY"]
+        keys = [k for k in val.split(",") if k]
+        if keys: BM_KEY = keys[0]
+except Exception:
+    pass
+
+if not BM_KEY and os.path.exists(".env"):
     with open(".env", "r") as f:
         for line in f:
             if line.startswith("BLUESMINDS_API_KEY="):
