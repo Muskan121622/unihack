@@ -29,27 +29,6 @@ These live spreadsheets are the direct output of the autonomous 8-stage pipeline
 
 ---
 
-### 🖥️ Part 1 — Live Streamlit App: Excel Output & RAG Agent in Action
-
-> *Shows the live deployed Streamlit URL, how to download the 1,000-row Excel output, and the Synematic AI Agent answering real product questions using RAG.*
-
-📌 *Upload Part 1 clip via GitHub web editor — drag your clip here*
-
----
-
-### 🗂️ Part 2 — VS Code: Pipeline Architecture Deep Dive
-
-> *Walks through the key pipeline files in VS Code — the 8-stage backend, LLM extractor, Qdrant indexer, and how the evidence builder processes raw web data into structured 252-column output.*
-
-https://github.com/user-attachments/assets/13f206e1-512c-4cd9-b5a3-f1e8e4e14b61
-
----
-
-### ☁️ Part 3 — System Design: Why AWS S3 for Production Storage
-
-> *Explains the production-grade architectural decision to use AWS S3 (or Google Cloud Storage) for storing the pre-processed Excel file, instead of converting the CSV to Excel on every request inside the Streamlit Cloud server.*
-
-https://github.com/user-attachments/assets/3dc6bf71-374a-4708-92b5-27df3c86ec98
 
 ---
 
