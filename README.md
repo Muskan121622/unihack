@@ -127,8 +127,8 @@ The backend operates on a highly robust 8-stage pipeline:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/synematic-ai.git
-   cd synematic-ai
+   git clone https://github.com/Muskan121622/unihack.git
+   cd unihack
    ```
 
 2. **Install dependencies:**
@@ -138,12 +138,14 @@ The backend operates on a highly robust 8-stage pipeline:
    ```
 
 3. **Set Environment Variables:**
-   Provide your API keys for the AI services. The pipeline supports comma-separated keys for automatic rotation!
+   Provide your API keys in a `.env` file or directly in your environment. The application requires access to the Vector Database (Qdrant) and LLM/Embedding services:
    ```powershell
-   $env:TAVILY_API_KEY="your_tavily_key"
-   $env:VOYAGE_API_KEY="your_voyage_keys"
-   $env:GROQ_API_KEY="your_groq_keys"
+   $env:BLUESMINDS_API_KEY="sk-..."
+   $env:VOYAGE_API_KEY="pa-..."
+   $env:QDRANT_URL="https://your-cluster.aws.cloud.qdrant.io"
+   $env:QDRANT_API_KEY="ey..."
    ```
+   *(Note: The pipeline supports comma-separated keys for automatic API rotation!)*
 
 ---
 
