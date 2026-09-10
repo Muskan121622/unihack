@@ -197,10 +197,11 @@ SYSTEM_PROMPT = (
 
 
 # ── BluesMinds models (tried first) ──
-BM_MODELS = ["gpt-4o-mini", "gpt-4o", "gpt-oss-20b"]
+# Verified working: gpt-4o/mini are down, gpt-oss models are live
+BM_MODELS = ["gpt-oss-20b", "gpt-oss-120b", "gpt-4o-mini"]
 
-# ── Groq models (fallback if all BluesMinds models fail) ──
-GROQ_MODELS = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "gemma2-9b-it"]
+# ── Groq models (fallback) — verified from GET /v1/models ──
+GROQ_MODELS = ["qwen/qwen3.8-27b", "qwen/qwen3.6-27b", "openai/gpt-oss-20b", "groq/compound"]
 
 _gi = [0]  # Groq key rotation index
 
@@ -215,9 +216,8 @@ def _try_bluesminds(msgs: list) -> str | None:
                 json={"model": model, "messages": msgs, "temperature": 0.2}, timeout=25)
             if r.status_code == 200:
                 return r.json()["choices"][0]["message"]["content"]
-            if "model_not_found" in r.text or r.status_code in (503, 404):
-                continue   # try next BluesMinds model
-            return None    # real error — escalate to Groq
+            # Always continue to next model on any failure
+            continue
         except Exception:
             continue
     return None
