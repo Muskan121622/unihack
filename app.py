@@ -16,6 +16,7 @@ def _load_secret(key):
 
 BM_KEYS     = [k.strip() for k in _load_secret("BLUESMINDS_API_KEY").split(",") if k.strip()]
 VOYAGE_KEYS = [k.strip() for k in _load_secret("VOYAGE_API_KEY").split(",") if k.strip()]
+GROQ_KEYS   = [k.strip() for k in _load_secret("GROQ_API_KEY").split(",") if k.strip()]
 QDRANT_URL  = _load_secret("QDRANT_URL").strip()
 QDRANT_KEY  = _load_secret("QDRANT_API_KEY").strip()
 
@@ -74,10 +75,10 @@ def parse_query(question: str) -> dict:
 #   Uses column groups from parse_query — not hardcoded to 2 fields
 # ═══════════════════════════════════════════
 
-def normalize_mpn(mpn: str) -> str:
+def normalize_mpn(mpn) -> str:
     """Canonical MPN normalization — applied once at retrieval, once at ingestion.
     strip whitespace → uppercase → deterministic identity matching."""
-    return mpn.strip().upper()
+    return str(mpn).strip().upper()
 
 def _cols_present(df: pd.DataFrame, group: str) -> list:
     """Return only the columns from a group that actually exist in the CSV."""
@@ -194,18 +195,67 @@ SYSTEM_PROMPT = (
     "Do not explain your internal RAG pipeline or retrieval mechanics to the user unless explicitly asked."
 )
 
-def call_llm(evidence: str, conversation: list) -> str:
-    if not BM_KEYS: return "No LLM API key configured."
+
+# ── BluesMinds models (tried first) ──
+BM_MODELS = ["gpt-4o-mini", "gpt-4o", "gpt-oss-20b"]
+
+# ── Groq models (fallback if all BluesMinds models fail) ──
+GROQ_MODELS = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "gemma2-9b-it"]
+
+_gi = [0]  # Groq key rotation index
+
+def _try_bluesminds(msgs: list) -> str | None:
+    """Try all BluesMinds models with key rotation. Returns answer or None."""
+    if not BM_KEYS: return None
     key = BM_KEYS[_bi[0] % len(BM_KEYS)]; _bi[0] += 1
+    for model in BM_MODELS:
+        try:
+            r = requests.post("https://api.bluesminds.com/v1/chat/completions",
+                headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+                json={"model": model, "messages": msgs, "temperature": 0.2}, timeout=25)
+            if r.status_code == 200:
+                return r.json()["choices"][0]["message"]["content"]
+            if "model_not_found" in r.text or r.status_code in (503, 404):
+                continue   # try next BluesMinds model
+            return None    # real error — escalate to Groq
+        except Exception:
+            continue
+    return None
+
+def _try_groq(msgs: list) -> str | None:
+    """Try all Groq models with key rotation. Returns answer or None."""
+    if not GROQ_KEYS: return None
+    key = GROQ_KEYS[_gi[0] % len(GROQ_KEYS)]; _gi[0] += 1
+    for model in GROQ_MODELS:
+        try:
+            r = requests.post("https://api.groq.com/openai/v1/chat/completions",
+                headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+                json={"model": model, "messages": msgs, "temperature": 0.2}, timeout=25)
+            if r.status_code == 200:
+                return r.json()["choices"][0]["message"]["content"]
+            if r.status_code in (503, 404, 429):
+                continue   # try next Groq model
+        except Exception:
+            continue
+    return None
+
+def call_llm(evidence: str, conversation: list) -> str:
     sys_c = SYSTEM_PROMPT + (f"\n\n--- RETRIEVED EVIDENCE ---\n{evidence}" if evidence else "\n\nNo evidence retrieved. Tell the user honestly.")
-    msgs = [{"role": "system", "content": sys_c}] + conversation
-    try:
-        r = requests.post("https://api.bluesminds.com/v1/chat/completions",
-            headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
-            json={"model": "gpt-4o", "messages": msgs, "temperature": 0.2}, timeout=25)
-        if r.status_code == 200: return r.json()["choices"][0]["message"]["content"]
-        return f"LLM Error {r.status_code}: {r.text[:200]}"
-    except Exception as e: return f"Connection failed: {e}"
+    msgs  = [{"role": "system", "content": sys_c}] + conversation
+
+    # 1. Try BluesMinds first
+    answer = _try_bluesminds(msgs)
+    if answer: return answer
+
+    # 2. Fallback → Groq
+    answer = _try_groq(msgs)
+    if answer: return answer
+
+    # 3. Both providers exhausted
+    bm_status  = "BluesMinds: configured" if BM_KEYS   else "BluesMinds: no key"
+    groq_status= "Groq: configured"       if GROQ_KEYS else "Groq: no key"
+    return f"All LLM providers unavailable. ({bm_status} | {groq_status})"
+
 
 # ═══════════════════════════════════════════
 # PUBLIC API — called by Streamlit UI
