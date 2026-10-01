@@ -250,7 +250,7 @@ def _try_gemini(msgs: list) -> str | None:
         "generationConfig": {"temperature": 0.2}
     }
     
-    for model in ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash-exp"]:
+    for model in ["gemini-flash-latest", "gemini-3.5-flash", "gemini-2.5-flash"]:
         try:
             url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={key}"
             r = requests.post(url, headers={"Content-Type": "application/json"}, json=payload, timeout=25)
