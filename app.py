@@ -14,7 +14,7 @@ def _load_secret(key):
                 if line.startswith(key + "="): return line.strip().split("=", 1)[1]
     return ""
 
-BM_KEYS     = [k.strip() for k in _load_secret("BLUESMINDS_API_KEY").split(",") if k.strip()]
+GEMINI_KEYS = [k.strip() for k in _load_secret("GEMINI_API_KEY").split(",") if k.strip()]
 VOYAGE_KEYS = [k.strip() for k in _load_secret("VOYAGE_API_KEY").split(",") if k.strip()]
 GROQ_KEYS   = [k.strip() for k in _load_secret("GROQ_API_KEY").split(",") if k.strip()]
 QDRANT_URL  = _load_secret("QDRANT_URL").strip()
@@ -195,38 +195,27 @@ SYSTEM_PROMPT = (
     "Do not explain your internal RAG pipeline or retrieval mechanics to the user unless explicitly asked."
 )
 
-
-# ── BluesMinds models (tried first) ──
-# Verified working: gpt-4o/mini are down, gpt-oss models are live
-BM_MODELS = ["gpt-oss-20b", "gpt-oss-120b", "gpt-4o-mini"]
-
-# ── Groq models (fallback) — verified from GET /v1/models ──
-GROQ_MODELS = ["qwen/qwen3.8-27b", "qwen/qwen3.6-27b", "openai/gpt-oss-20b", "groq/compound"]
-
+# ── Fallback logic: Fetch dynamic models ──
 _gi = [0]  # Groq key rotation index
+_ge = [0]  # Gemini key rotation index
 
-def _try_bluesminds(msgs: list) -> str | None:
-    """Try all BluesMinds models with key rotation. Returns answer or None."""
-    if not BM_KEYS: return None
-    key = BM_KEYS[_bi[0] % len(BM_KEYS)]; _bi[0] += 1
-    for model in BM_MODELS:
-        try:
-            r = requests.post("https://api.bluesminds.com/v1/chat/completions",
-                headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
-                json={"model": model, "messages": msgs, "temperature": 0.2}, timeout=25)
-            if r.status_code == 200:
-                return r.json()["choices"][0]["message"]["content"]
-            # Always continue to next model on any failure
-            continue
-        except Exception:
-            continue
-    return None
+def _get_live_groq_models(key: str) -> list:
+    """Fetch live available models directly from Groq so we never rely on hardcoded lists."""
+    try:
+        r = requests.get("https://api.groq.com/openai/v1/models", headers={"Authorization": f"Bearer {key}"}, timeout=5)
+        if r.status_code == 200:
+            return [m["id"] for m in r.json().get("data", [])]
+    except Exception:
+        pass
+    return ["qwen/qwen3.8-27b", "openai/gpt-oss-20b"]
 
 def _try_groq(msgs: list) -> str | None:
-    """Try all Groq models with key rotation. Returns answer or None."""
+    """Try Groq models with key rotation and dynamically fetched model list."""
     if not GROQ_KEYS: return None
     key = GROQ_KEYS[_gi[0] % len(GROQ_KEYS)]; _gi[0] += 1
-    for model in GROQ_MODELS:
+    
+    live_models = _get_live_groq_models(key)
+    for model in live_models:
         try:
             r = requests.post("https://api.groq.com/openai/v1/chat/completions",
                 headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
@@ -234,7 +223,41 @@ def _try_groq(msgs: list) -> str | None:
             if r.status_code == 200:
                 return r.json()["choices"][0]["message"]["content"]
             if r.status_code in (503, 404, 429):
-                continue   # try next Groq model
+                continue
+        except Exception:
+            continue
+    return None
+
+def _try_gemini(msgs: list) -> str | None:
+    """Try Gemini models via direct REST API with key rotation."""
+    if not GEMINI_KEYS: return None
+    key = GEMINI_KEYS[_ge[0] % len(GEMINI_KEYS)]; _ge[0] += 1
+    
+    # Convert OpenAI message format to Gemini format
+    system_instruction = ""
+    gemini_contents = []
+    
+    for m in msgs:
+        if m["role"] == "system":
+            system_instruction = m["content"]
+        else:
+            role = "model" if m["role"] == "assistant" else "user"
+            gemini_contents.append({"role": role, "parts": [{"text": m["content"]}]})
+
+    payload = {
+        "systemInstruction": {"parts": [{"text": system_instruction}]},
+        "contents": gemini_contents,
+        "generationConfig": {"temperature": 0.2}
+    }
+    
+    for model in ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash-exp"]:
+        try:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={key}"
+            r = requests.post(url, headers={"Content-Type": "application/json"}, json=payload, timeout=25)
+            if r.status_code == 200:
+                return r.json()["candidates"][0]["content"]["parts"][0]["text"]
+            if r.status_code in (503, 429, 404):
+                continue
         except Exception:
             continue
     return None
@@ -243,18 +266,18 @@ def call_llm(evidence: str, conversation: list) -> str:
     sys_c = SYSTEM_PROMPT + (f"\n\n--- RETRIEVED EVIDENCE ---\n{evidence}" if evidence else "\n\nNo evidence retrieved. Tell the user honestly.")
     msgs  = [{"role": "system", "content": sys_c}] + conversation
 
-    # 1. Try BluesMinds first
-    answer = _try_bluesminds(msgs)
+    # 1. Try Gemini first (highly reliable)
+    answer = _try_gemini(msgs)
     if answer: return answer
 
-    # 2. Fallback → Groq
+    # 2. Fallback → Groq (dynamic models)
     answer = _try_groq(msgs)
     if answer: return answer
 
     # 3. Both providers exhausted
-    bm_status  = "BluesMinds: configured" if BM_KEYS   else "BluesMinds: no key"
-    groq_status= "Groq: configured"       if GROQ_KEYS else "Groq: no key"
-    return f"All LLM providers unavailable. ({bm_status} | {groq_status})"
+    gemini_status = "Gemini: configured" if GEMINI_KEYS else "Gemini: no key"
+    groq_status   = "Groq: configured"   if GROQ_KEYS   else "Groq: no key"
+    return f"All LLM providers unavailable. ({gemini_status} | {groq_status})"
 
 
 # ═══════════════════════════════════════════
@@ -365,5 +388,5 @@ with col_s:
         st.caption("Drag and drop catalogs or PDFs.")
         st.file_uploader("Upload", type=["csv", "pdf", "json"], label_visibility="hidden")
     with st.expander("Pipeline Settings"):
-        st.selectbox("Model", ["gpt-4o (BluesMinds)", "gpt-4o-mini"])
+        st.selectbox("Primary Model", ["Gemini 1.5 Flash", "Groq Dynamic"])
         st.toggle("Vector Search Enabled", value=True)
